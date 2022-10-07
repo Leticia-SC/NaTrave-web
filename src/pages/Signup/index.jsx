@@ -2,7 +2,7 @@ import axios from 'axios'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
 import { useLocalStorage } from 'react-use'
-import { Navigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import { Icon, Input } from '~/components'
 
@@ -15,6 +15,7 @@ const validationSchema = yup.object().shape({
 
 export const Signup = () => {
     const [auth, setAuth] = useLocalStorage('auth', {})
+    const navigate = useNavigate()
     
     const formik = useFormik({
         onSubmit: async (values) => {
@@ -24,7 +25,7 @@ export const Signup = () => {
                 url: '/users',
                 data: values
             })
-            window.localStorage.setItem('auth', JSON.stringify(res.data))
+            localStorage.setItem('auth', JSON.stringify(res.data))
         },
         initialValues: {
             name: '',
@@ -37,6 +38,11 @@ export const Signup = () => {
 
     if(auth?.user?.id){
         return <Navigate to="/dashboard" replace={true}/>
+    }
+
+    const login = () => {
+        setAuth({})
+        navigate('/login')
     }
      
     return(
@@ -102,6 +108,7 @@ export const Signup = () => {
 
                     <button 
                         type='submit' 
+                        onClick={login}
                         disabled={!formik.isValid || formik.isSubmitting} 
                         className="block w-full text-center text-white bg-red-500 px-6 py-3 rounded-xl disabled:opacity-40"
                     >
