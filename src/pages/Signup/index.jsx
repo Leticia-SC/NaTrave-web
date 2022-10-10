@@ -25,6 +25,16 @@ export const Signup = () => {
                 data: values
             })
             localStorage.setItem('auth', JSON.stringify(res.data))
+            const user = await axios({
+                method: 'get',
+                baseURL: import.meta.env.VITE_API_URL,
+                url: '/login',
+                auth: {
+                    username: values.email,
+                    password: values.password
+                }
+            })
+            setAuth(user.data)
         },
         initialValues: {
             name: '',
